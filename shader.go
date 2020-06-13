@@ -37,9 +37,10 @@ type Shader struct {
 //
 // 	vertexShaderFile:   Path of the vertex shader file to load, or "" to skip this shader
 // 	fragmentShaderFile: Path of the fragment shader file to load, or "" to skip this shader
-func NewShaderFromFile(vertexShaderFile, fragmentShaderFile string) (*Shader, error) {
+func NewShaderFromFile(vertexShaderFile, geometryShaderFilename, fragmentShaderFile string) (*Shader, error) {
 	var (
 		cVShader *C.char = nil
+		cGShader *C.char = nil
 		cFShader *C.char = nil
 	)
 
@@ -48,12 +49,17 @@ func NewShaderFromFile(vertexShaderFile, fragmentShaderFile string) (*Shader, er
 		defer C.free(unsafe.Pointer(cVShader))
 	}
 
+	if len(geometryShaderFilename) > 0 {
+		cGShader = C.CString(geometryShaderFilename)
+		defer C.free(unsafe.Pointer(cGShader))
+	}
+
 	if len(fragmentShaderFile) > 0 {
 		cFShader = C.CString(fragmentShaderFile)
 		defer C.free(unsafe.Pointer(cFShader))
 	}
 
-	if cptr := C.sfShader_createFromFile(cVShader, cFShader); cptr != nil {
+	if cptr := C.sfShader_createFromFile(cVShader, cGShader, cFShader); cptr != nil {
 		shader := &Shader{cptr}
 		runtime.SetFinalizer(shader, (*Shader).destroy)
 
@@ -75,15 +81,22 @@ func NewShaderFromFile(vertexShaderFile, fragmentShaderFile string) (*Shader, er
 //
 // 	vertexShader:   String containing the source code of the vertex shader, or "" to skip this shader
 // 	fragmentShader: String containing the source code of the fragment shader, or "" to skip this shader
-func NewShaderFromMemory(vertexShader, fragmentShader string) (*Shader, error) {
+func NewShaderFromMemory(vertexShader, geometryShader, fragmentShader string) (*Shader, error) {
 	var (
 		cVShader *C.char = nil
+		cGShader *C.char = nil
 		cFShader *C.char = nil
 	)
 
 	if len(vertexShader) > 0 {
+
 		cVShader = C.CString(vertexShader)
 		defer C.free(unsafe.Pointer(cVShader))
+	}
+
+	if len(geometryShader) > 0 {
+		cGShader = C.CString(geometryShader)
+		defer C.free(unsafe.Pointer(cGShader))
 	}
 
 	if len(fragmentShader) > 0 {
@@ -91,7 +104,7 @@ func NewShaderFromMemory(vertexShader, fragmentShader string) (*Shader, error) {
 		defer C.free(unsafe.Pointer(cFShader))
 	}
 
-	if cptr := C.sfShader_createFromMemory(cVShader, cFShader); cptr != nil {
+	if cptr := C.sfShader_createFromMemory(cVShader, cGShader, cFShader); cptr != nil {
 		shader := &Shader{cptr}
 		runtime.SetFinalizer(shader, (*Shader).destroy)
 		return shader, nil

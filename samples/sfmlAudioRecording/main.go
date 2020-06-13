@@ -8,7 +8,7 @@
 package main
 
 import (
-	sf "bitbucket.org/krepa098/gosfml2"
+	sf "github.com/Alkemic/sfml"
 	"fmt"
 	"time"
 )

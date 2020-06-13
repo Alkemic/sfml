@@ -9,7 +9,7 @@
 package main
 
 import (
-	sf "bitbucket.org/krepa098/gosfml2"
+	sf "github.com/Alkemic/sfml"
 	"math"
 	"math/rand"
 )
@@ -63,7 +63,7 @@ func (this *WaveBlur) Load() {
 	this.text.SetPosition(sf.Vector2f{30, 20})
 
 	// Load the shader
-	this.shader, _ = sf.NewShaderFromFile("resources/wave.vert", "resources/blur.frag")
+	this.shader, _ = sf.NewShaderFromFile("resources/wave.vert", "","resources/blur.frag")
 }
 
 func (this *WaveBlur) Update(time, x, y float32) {
@@ -94,7 +94,7 @@ func (this *Pixelate) Load() {
 	this.sprite, _ = sf.NewSprite(texture)
 
 	// Load the shader
-	this.shader, _ = sf.NewShaderFromFile("", "resources/pixelate.frag")
+	this.shader, _ = sf.NewShaderFromFile("", "","resources/pixelate.frag")
 }
 
 func (this *Pixelate) Update(time, x, y float32) {
@@ -134,7 +134,7 @@ func (this *StormBlink) Load() {
 	}
 
 	// Load the shader
-	this.shader, _ = sf.NewShaderFromFile("resources/storm.vert", "resources/blink.frag")
+	this.shader, _ = sf.NewShaderFromFile("resources/storm.vert", "","resources/blink.frag")
 }
 
 func (this *StormBlink) Update(time, x, y float32) {
@@ -194,7 +194,7 @@ func (this *Edge) Load() {
 	}
 
 	// Load the shader
-	this.shader, _ = sf.NewShaderFromFile("", "resources/edge.frag")
+	this.shader, _ = sf.NewShaderFromFile("", "","resources/edge.frag")
 	this.shader.SetCurrentTextureParameter("texture")
 }
 
